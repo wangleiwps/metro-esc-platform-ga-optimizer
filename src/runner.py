@@ -12,6 +12,7 @@ import seaborn as sns
 from typing import List, Dict, Optional, Tuple
 import json
 import os
+import math
 from datetime import datetime
 from pathlib import Path
 
@@ -305,7 +306,8 @@ class OptimizationRunner:
         """
         if filename is None:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"order_list_{result['algorithm']}_{timestamp}.csv"
+            algorithm_name = result.get('algorithm', result.get('optimization_method', 'Unknown'))
+            filename = f"order_list_{algorithm_name}_{timestamp}.csv"
         
         filepath = self.output_dir / "csv" / filename
         
