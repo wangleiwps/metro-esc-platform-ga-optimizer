@@ -7,14 +7,55 @@
 
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from typing import List, Dict, Optional, Tuple
 import json
 import os
 import math
 from datetime import datetime
 from pathlib import Path
+from typing import List, Dict, Optional, Tuple
+
+# 配置matplotlib中文字体
+import matplotlib
+matplotlib.use('Agg')  # 使用非交互式后端
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+from matplotlib.font_manager import FontProperties
+import seaborn as sns
+
+# 强制添加中文字体
+def setup_chinese_fonts():
+    """设置中文字体"""
+    font_paths = [
+        '/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc',
+        '/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc',
+        '/usr/share/fonts/opentype/noto/NotoSansCJK-Medium.ttc'
+    ]
+    
+    for font_path in font_paths:
+        if os.path.exists(font_path):
+            try:
+                fm.fontManager.addfont(font_path)
+            except:
+                pass
+    
+    # 设置默认字体
+    plt.rcParams['font.sans-serif'] = ['Noto Sans CJK SC', 'Noto Sans CJK TC', 'SimHei', 'DejaVu Sans']
+    plt.rcParams['axes.unicode_minus'] = False
+    
+    # 创建中文字体属性
+    chinese_font = FontProperties()
+    available_fonts = [f.name for f in fm.fontManager.ttflist if 'CJK' in f.name]
+    if available_fonts:
+        chinese_font.set_family(available_fonts[0])
+        return chinese_font
+    return None
+
+# 初始化字体
+CHINESE_FONT = setup_chinese_fonts()
+
+# 设置seaborn样式
+sns.set_style("whitegrid")
+sns.set_context("paper", font_scale=1.2)
 
 from .ga import GeneticAlgorithm, GAConfig, SteelSupport, create_sample_data
 from .sa import SimulatedAnnealing, SAConfig, HybridGASA, create_initial_solution
@@ -364,9 +405,15 @@ class OptimizationRunner:
         bars = ax.bar(summary_df['Algorithm'], summary_df['Total_Cost'], 
                      color=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728'])
         
-        ax.set_title('算法成本对比', fontsize=16, fontweight='bold')
-        ax.set_xlabel('算法', fontsize=12)
-        ax.set_ylabel('总成本 (元)', fontsize=12)
+        # 使用中文字体设置标题和标签
+        if CHINESE_FONT:
+            ax.set_title('算法成本对比', fontproperties=CHINESE_FONT, fontsize=16, fontweight='bold')
+            ax.set_xlabel('算法', fontproperties=CHINESE_FONT, fontsize=12)
+            ax.set_ylabel('总成本 (元)', fontproperties=CHINESE_FONT, fontsize=12)
+        else:
+            ax.set_title('算法成本对比', fontsize=16, fontweight='bold')
+            ax.set_xlabel('算法', fontsize=12)
+            ax.set_ylabel('总成本 (元)', fontsize=12)
         
         # 添加数值标签
         for bar in bars:
@@ -390,9 +437,15 @@ class OptimizationRunner:
         bars = ax.bar(summary_df['Algorithm'], summary_df['Total_Waste'],
                      color=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728'])
         
-        ax.set_title('算法材料浪费对比', fontsize=16, fontweight='bold')
-        ax.set_xlabel('算法', fontsize=12)
-        ax.set_ylabel('总浪费 (mm)', fontsize=12)
+        # 使用中文字体设置标题和标签
+        if CHINESE_FONT:
+            ax.set_title('算法材料浪费对比', fontproperties=CHINESE_FONT, fontsize=16, fontweight='bold')
+            ax.set_xlabel('算法', fontproperties=CHINESE_FONT, fontsize=12)
+            ax.set_ylabel('总浪费 (mm)', fontproperties=CHINESE_FONT, fontsize=12)
+        else:
+            ax.set_title('算法材料浪费对比', fontsize=16, fontweight='bold')
+            ax.set_xlabel('算法', fontsize=12)
+            ax.set_ylabel('总浪费 (mm)', fontsize=12)
         
         for bar in bars:
             height = bar.get_height()
@@ -415,9 +468,15 @@ class OptimizationRunner:
         bars = ax.bar(summary_df['Algorithm'], summary_df['Num_Standards'],
                      color=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728'])
         
-        ax.set_title('标准规格数量对比', fontsize=16, fontweight='bold')
-        ax.set_xlabel('算法', fontsize=12)
-        ax.set_ylabel('规格数量', fontsize=12)
+        # 使用中文字体设置标题和标签
+        if CHINESE_FONT:
+            ax.set_title('标准规格数量对比', fontproperties=CHINESE_FONT, fontsize=16, fontweight='bold')
+            ax.set_xlabel('算法', fontproperties=CHINESE_FONT, fontsize=12)
+            ax.set_ylabel('规格数量', fontproperties=CHINESE_FONT, fontsize=12)
+        else:
+            ax.set_title('标准规格数量对比', fontsize=16, fontweight='bold')
+            ax.set_xlabel('算法', fontsize=12)
+            ax.set_ylabel('规格数量', fontsize=12)
         
         for bar in bars:
             height = bar.get_height()
@@ -442,9 +501,15 @@ class OptimizationRunner:
         bars1 = ax1.bar(improvement_data['Algorithm'], improvement_data['Cost_Improvement_%'],
                        color=['#1f77b4', '#ff7f0e', '#2ca02c'])
         
-        ax1.set_title('成本改进百分比', fontsize=14, fontweight='bold')
-        ax1.set_xlabel('算法', fontsize=12)
-        ax1.set_ylabel('成本改进 (%)', fontsize=12)
+        # 使用中文字体设置第一个子图
+        if CHINESE_FONT:
+            ax1.set_title('成本改进百分比', fontproperties=CHINESE_FONT, fontsize=14, fontweight='bold')
+            ax1.set_xlabel('算法', fontproperties=CHINESE_FONT, fontsize=12)
+            ax1.set_ylabel('成本改进 (%)', fontproperties=CHINESE_FONT, fontsize=12)
+        else:
+            ax1.set_title('成本改进百分比', fontsize=14, fontweight='bold')
+            ax1.set_xlabel('算法', fontsize=12)
+            ax1.set_ylabel('成本改进 (%)', fontsize=12)
         ax1.axhline(y=0, color='red', linestyle='--', alpha=0.7)
         
         for bar in bars1:
@@ -456,9 +521,15 @@ class OptimizationRunner:
         bars2 = ax2.bar(improvement_data['Algorithm'], improvement_data['Waste_Reduction_%'],
                        color=['#1f77b4', '#ff7f0e', '#2ca02c'])
         
-        ax2.set_title('浪费减少百分比', fontsize=14, fontweight='bold')
-        ax2.set_xlabel('算法', fontsize=12)
-        ax2.set_ylabel('浪费减少 (%)', fontsize=12)
+        # 使用中文字体设置第二个子图
+        if CHINESE_FONT:
+            ax2.set_title('浪费减少百分比', fontproperties=CHINESE_FONT, fontsize=14, fontweight='bold')
+            ax2.set_xlabel('算法', fontproperties=CHINESE_FONT, fontsize=12)
+            ax2.set_ylabel('浪费减少 (%)', fontproperties=CHINESE_FONT, fontsize=12)
+        else:
+            ax2.set_title('浪费减少百分比', fontsize=14, fontweight='bold')
+            ax2.set_xlabel('算法', fontsize=12)
+            ax2.set_ylabel('浪费减少 (%)', fontsize=12)
         ax2.axhline(y=0, color='red', linestyle='--', alpha=0.7)
         
         for bar in bars2:
