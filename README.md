@@ -14,7 +14,28 @@
 - **动态安全余量计算**：基于σ×δ×ε×f四因子公式的自适应安全余量策略
 - **成本敏感聚类**：改进K-means算法，综合考虑材料、标准化和浪费成本
 - **GA-SA混合优化**：遗传算法与模拟退火算法的两阶段优化框架
+- **长度标准化约束**：确保所有标准长度为10mm倍数，符合工程实际要求
 - **智能订货清单**：自动生成长度-数量优化的CSV订货清单
+
+## 🔧 新增功能：长度标准化
+
+### 问题解决
+- **原问题**：算法生成的标准长度包含小数（如1251.33mm），不符合钢梁生产标准
+- **解决方案**：集成长度标准化器，确保所有标准长度为10的倍数
+- **工程价值**：符合实际生产要求，便于采购和库存管理
+
+### 使用方法
+```bash
+# 使用改进的标准化算法
+python main_improved.py --demo --compare --output results/
+
+# 处理客户采购表
+python data_converter.py --input 客户采购表.csv
+python main_improved.py --input 客户采购表_converted.csv --compare --output results/
+
+# 演示标准化效果
+python demo_standardized_lengths.py
+```
 
 ## 🚀 快速开始
 
